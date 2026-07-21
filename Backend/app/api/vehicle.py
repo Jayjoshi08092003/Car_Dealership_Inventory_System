@@ -10,6 +10,13 @@ from app.schemas.vehicle import (
 from app.services.vehicle_service import VehicleService
 from app.core.security import get_current_user, get_current_admin
 from app.models.user import User
+from app.schemas.vehicle import (
+    VehicleCreate,
+    VehicleUpdate,
+    VehicleResponse,
+    PurchaseRequest,
+    RestockRequest,
+)
 
 router = APIRouter(prefix="/vehicles", tags=["Vehicles"])
 
@@ -76,3 +83,39 @@ def delete_vehicle(
         raise HTTPException(status_code=404, detail="Vehicle not found")
 
     return {"message": "Vehicle deleted successfully"}
+@router.post("/{vehicle_id}/purchase", response_model=VehicleResponse)
+def purchase_vehicle(
+    vehicle_id: int,
+    request: PurchaseRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        return VehicleService.purchase(
+            db,
+            vehicle_id,
+            request.quantity,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e),
+        )
+@router.post("/{vehicle_id}/restock", response_model=VehicleResponse)
+def restock_vehicle(
+    vehicle_id: int,
+    request: RestockRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin),
+):
+    try:
+        return VehicleService.restock(
+            db,
+            vehicle_id,
+            request.quantity,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e),
+        )

@@ -26,6 +26,14 @@ class VehicleResponse(BaseModel):
     price: float
     quantity: int
     created_at: datetime
+from pydantic import BaseModel, Field
+
+class PurchaseRequest(BaseModel):
+    quantity: int = Field(..., gt=0)
+
+
+class RestockRequest(BaseModel):
+    quantity: int = Field(..., gt=0)
 
     model_config = {
         "from_attributes": True

@@ -71,3 +71,34 @@ class VehicleService:
             min_price,
             max_price,
         )
+    @staticmethod
+    def purchase(db: Session, vehicle_id: int, quantity: int):
+
+        vehicle = VehicleRepository.get_by_id(db, vehicle_id)
+
+        if vehicle is None:
+            raise ValueError("Vehicle not found")
+
+        if vehicle.quantity < quantity:
+            raise ValueError("Insufficient stock")
+
+        return VehicleRepository.purchase(
+            db,
+            vehicle,
+            quantity,
+        )
+
+
+    @staticmethod
+    def restock(db: Session, vehicle_id: int, quantity: int):
+
+        vehicle = VehicleRepository.get_by_id(db, vehicle_id)
+
+        if vehicle is None:
+            raise ValueError("Vehicle not found")
+
+        return VehicleRepository.restock(
+            db,
+            vehicle,
+            quantity,
+        )

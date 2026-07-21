@@ -63,3 +63,16 @@ class VehicleRepository:
             query = query.filter(Vehicle.price <= max_price)
 
         return query.all()
+    @staticmethod
+    def purchase(db: Session, vehicle: Vehicle, quantity: int):
+        vehicle.quantity -= quantity
+        db.commit()
+        db.refresh(vehicle)
+        return vehicle
+
+    @staticmethod
+    def restock(db: Session, vehicle: Vehicle, quantity: int):
+        vehicle.quantity += quantity
+        db.commit()
+        db.refresh(vehicle)
+        return vehicle
