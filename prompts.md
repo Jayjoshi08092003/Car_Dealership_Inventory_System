@@ -1,0 +1,1 @@
+prompt 1: by giving pdf of problem statement this prompt is asked for best possible tech stack "this is technical assesment given by a compney tell me hows ai using policy and should i approach this problem and how i implement this end to end".
