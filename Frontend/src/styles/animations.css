@@ -1,0 +1,35 @@
+.fade-up{
+    animation:fadeUp .6s ease forwards;
+}
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+.hover-lift{
+
+    transition:.3s;
+
+}
+
+.hover-lift:hover{
+
+    transform:translateY(-6px);
+
+}
+
+.glow:hover{
+
+    box-shadow:0 0 35px rgba(37,99,235,.35);
+
+}
