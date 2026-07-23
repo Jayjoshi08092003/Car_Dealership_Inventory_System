@@ -1,96 +1,91 @@
 # 🚗 Car Dealership Inventory System
 
-A modern full-stack inventory management system for car dealerships built with **FastAPI**, **PostgreSQL**, **SQLAlchemy**, and **React**.
+A full-stack Car Dealership Inventory Management System built using **FastAPI**, **PostgreSQL**, and **React**. The application allows dealerships to manage vehicle inventory, perform stock operations, and authenticate users securely using JWT.
 
 ---
 
-# Features
+## Features
 
-## Authentication
-
-- JWT Authentication
-- OAuth2 Login
+### Authentication
 - User Registration
-- Protected Routes
+- Secure Login using JWT
+- Password Hashing
 - Role-Based Access Control
+- Protected API Endpoints
 
----
-
-## Vehicle Management
-
-- View Inventory
-- Add Vehicles
-- Edit Vehicles
+### Vehicle Management
+- Add New Vehicles
+- Update Vehicle Information
 - Delete Vehicles
+- View Complete Inventory
+- Search Vehicles
+- Filter by Make, Model, Category, Price
 - Purchase Vehicles
-- Restock Vehicles
+- Restock Inventory
+
+### Inventory Operations
+- Automatic Stock Updates
+- Purchase Validation
+- Prevent Overselling
+- Inventory Tracking
 
 ---
 
-## Dashboard
+## Tech Stack
 
-Real-time inventory analytics including
-
-- Total Vehicles
-- Total Stock
-- Total Inventory Value
-- Low Stock Alerts
-
----
-
-# Tech Stack
-
-## Backend
+### Backend
 
 - FastAPI
 - SQLAlchemy
 - PostgreSQL
 - Pydantic
-- JWT
-- Passlib (bcrypt)
+- JWT Authentication
+- Passlib
+- Alembic
+- Pytest
 
-## Frontend
+### Frontend
 
-- React (Vite)
-- Tailwind CSS
-- Axios
+- React
+- Vite
 - React Router
+- Axios
+- Tailwind CSS
 - React Hook Form
-- React Hot Toast
-- Framer Motion
-- React Icons
 
 ---
 
-# Project Structure
+## Project Structure
 
 ```
-Backend
-│
-├── app
-│   ├── core
-│   ├── database
-│   ├── models
-│   ├── repositories
-│   ├── routes
-│   ├── schemas
-│   ├── services
-│   └── main.py
-│
-├── requirements.txt
-└── .env
+Car_Dealership_Inventory_System/
 
-
-Frontend
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── database/
+│   │   ├── models/
+│   │   ├── repositories/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   └── main.py
+│   │
+│   ├── tests/
+│   └── requirements.txt
 │
-├── src
-│   ├── api
-│   ├── components
-│   ├── context
-│   ├── hooks
-│   ├── pages
-│   ├── services
-│   └── App.jsx
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── dashboard/
+│   │   ├── hooks/
+│   │   └── layout/
+│   │
+│   └── package.json
+│
+└── README.md
 ```
 
 ---
@@ -100,136 +95,274 @@ Frontend
 ## Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/YOUR_USERNAME/Car_Dealership_Inventory_System.git
+
+cd Car_Dealership_Inventory_System
 ```
 
 ---
 
-## Backend
+# Backend Setup
+
+Create Virtual Environment
 
 ```bash
-cd Backend
-
-python -m venv .venv
-
-source .venv/bin/activate
+python -m venv venv
 ```
+
+Activate
 
 Windows
 
 ```bash
-.venv\Scripts\activate
+venv\Scripts\activate
 ```
 
-Install dependencies
+Linux / Mac
+
+```bash
+source venv/bin/activate
+```
+
+Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run
+---
+
+## Configure Environment
+
+Create a `.env` file.
+
+Example:
+
+```env
+DATABASE_URL=postgresql://postgres:password@localhost:5432/car_dealership
+
+SECRET_KEY=your-secret-key
+
+ALGORITHM=HS256
+
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+```
+
+---
+
+## Database Migration
+
+```bash
+alembic upgrade head
+```
+
+---
+
+## Run Backend
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
+Backend URL
+
+```
+http://localhost:8000
+```
+
+Swagger
+
+```
+http://localhost:8000/docs
+```
+
 ---
 
-## Frontend
+# Frontend Setup
+
+Navigate
 
 ```bash
-cd Frontend
+cd frontend
+```
 
+Install Packages
+
+```bash
 npm install
+```
 
+Create `.env`
+
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+Run
+
+```bash
 npm run dev
 ```
 
----
+Frontend
 
-# Environment Variables
-
-Create a `.env`
-
-```env
-DATABASE_URL=postgresql://username:password@localhost:5432/car_dealership
-
-SECRET_KEY=your_secret_key
-
-ALGORITHM=HS256
-
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+```
+http://localhost:5173
 ```
 
 ---
 
-# API Documentation
+# API Endpoints
 
-Swagger UI
+## Authentication
 
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | /auth/register | Register User |
+| POST | /auth/login | Login |
+
+---
+
+## Users
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /users/me |
+
+---
+
+## Vehicles
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /vehicles |
+| POST | /vehicles |
+| PUT | /vehicles/{id} |
+| DELETE | /vehicles/{id} |
+| GET | /vehicles/search |
+
+---
+
+## Inventory
+
+| Method | Endpoint |
+|---------|----------|
+| POST | /vehicles/{id}/purchase |
+| POST | /vehicles/{id}/restock |
+
+---
+
+# Running Tests
+
+Backend
+
+```bash
+pytest
 ```
-http://127.0.0.1:8000/docs
+
+Verbose
+
+```bash
+pytest -v
 ```
 
-ReDoc
+Coverage
 
-```
-http://127.0.0.1:8000/redoc
+```bash
+pytest --cov=app
 ```
 
 ---
 
-# Authentication Flow
+# Screenshots
 
-```
-Register
-      ↓
-Login
-      ↓
-JWT Token
-      ↓
-Protected Routes
-      ↓
-Inventory Management
-```
+Add screenshots of:
+
+- Login Page
+- Dashboard
+- Vehicle List
+- Add Vehicle
+- Purchase Vehicle
+- Restock Vehicle
+- Search Functionality
 
 ---
 
-# Inventory Workflow
+# Security
 
-```
-Create Vehicle
-        ↓
-View Inventory
-        ↓
-Purchase Vehicle
-        ↓
-Stock Updated
-        ↓
-Restock Inventory
-```
+- JWT Authentication
+- Password Hashing
+- Protected Routes
+- Role-Based Authorization
+- Request Validation
+- SQL Injection Protection via SQLAlchemy
 
 ---
 
-# Future Enhancements
+# Future Improvements
 
-- Search and Filtering
-- Pagination
 - Vehicle Images
 - Sales Reports
-- Purchase History
+- Analytics Dashboard
+- Email Notifications
 - Audit Logs
-- Docker Support
-- CI/CD Pipeline
-- Unit Testing
-- Integration Testing
+- Export Inventory to CSV/PDF
+- Pagination
+- Advanced Filtering
 
 ---
 
 # Author
 
-**Jay P. Joshi**
+Jay P. Joshi
 
 M.E. Information Technology
 
-AI/ML Engineer | Backend Developer | Full Stack Developer
+L.D. College of Engineering
+
+Ahmedabad, Gujarat
+
+GitHub:
+https://github.com/Jayjoshi08092003/Car_Dealership_Inventory_System
+
+---
+My AI Usage
+AI Tools Used
+
+During the development of this project, I used the following AI tools to improve productivity and assist with software development:
+
+ChatGPT (OpenAI)
+Google Gemini
+GitHub Copilot (optional, remove this if you did not use it)
+How I Used AI
+ChatGPT
+
+I primarily used ChatGPT as a programming assistant throughout the project. Specifically, it helped me with:
+
+Understanding FastAPI concepts and best practices.
+Designing the project architecture using the Repository-Service pattern.
+Generating boilerplate code for CRUD operations.
+Explaining SQLAlchemy relationships and database interactions.
+Debugging backend and frontend errors.
+Writing and improving API documentation.
+Creating unit tests for authentication and vehicle management modules.
+Drafting the project README and improving documentation.
+Google Gemini
+
+I used Google Gemini to:
+
+Brainstorm ideas for organizing the project structure.
+Review API endpoint organization.
+Compare different implementation approaches.
+Verify frontend component organization.
+Obtain alternative solutions while debugging specific issues.
+
+Reflection on AI Usage
+
+AI significantly improved my development workflow by acting as a coding assistant rather than a replacement for my own work. It helped me understand unfamiliar concepts more quickly, generate initial code templates, identify bugs, and improve documentation. I reviewed, modified, and tested all AI-generated suggestions before integrating them into the project.
+
+Using AI reduced development time, improved code readability, and allowed me to focus more on implementing project requirements and validating functionality. The final application, including its architecture, testing, and debugging, reflects my own understanding and verification of the generated suggestions.
+
+# License
+
+This project is developed for educational purposes and assignment submission.
