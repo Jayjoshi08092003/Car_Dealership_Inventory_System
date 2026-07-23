@@ -1,167 +1,155 @@
-# Car Dealership Inventory System
+# prompts.md
 
-## Project Overview
+# AI Prompts Used During Development
 
-A full-stack Car Dealership Inventory Management System built using FastAPI, PostgreSQL, SQLAlchemy, and React.
-
-The application provides secure authentication, inventory management, purchasing workflows, and an analytics dashboard through a responsive modern UI.
+This document records representative prompts that were used with AI tools (primarily ChatGPT and Google Gemini) during the development of the Car Dealership Inventory System.
 
 ---
 
-## Backend Stack
+# Prompt 1 – Project Architecture
 
-- FastAPI
-- SQLAlchemy ORM
-- PostgreSQL
-- Pydantic
-- JWT Authentication
-- OAuth2PasswordBearer
-- Passlib (bcrypt)
-- Repository-Service Architecture
+**Prompt**
 
----
+> Design a backend architecture for a Car Dealership Inventory System using FastAPI, SQLAlchemy, PostgreSQL, and JWT authentication following the Repository-Service pattern.
 
-## Frontend Stack
+**Purpose**
 
-- React (Vite)
-- Tailwind CSS
-- React Router DOM
-- Axios
-- React Hook Form
-- React Hot Toast
-- Framer Motion
-- React Icons
+Used to understand how to organize the backend into controllers, services, repositories, schemas, and models.
 
 ---
 
-## Features
+# Prompt 2 – Database Design
 
-### Authentication
+**Prompt**
 
-- User Registration
-- Secure Login
-- JWT Token Authentication
-- Protected Routes
-- Role-Based Authorization
+> Generate SQLAlchemy models for Users and Vehicles with proper relationships, constraints, and validation.
 
----
+**Purpose**
 
-### Vehicle Management
-
-- Add Vehicle
-- Edit Vehicle
-- Delete Vehicle
-- View Vehicle Inventory
-- Purchase Vehicle
-- Restock Vehicle
+Used as a starting point for implementing database models.
 
 ---
 
-### Dashboard
+# Prompt 3 – Authentication
 
-Displays
+**Prompt**
 
-- Total Vehicles
-- Total Stock
-- Total Inventory Value
-- Low Stock Alerts
+> Implement JWT authentication in FastAPI including registration, login, password hashing using Passlib, and token generation.
 
----
+**Purpose**
 
-## Backend Architecture
-
-```
-Routes
-    ↓
-Services
-    ↓
-Repositories
-    ↓
-SQLAlchemy Models
-    ↓
-PostgreSQL
-```
+Used to implement secure authentication and authorization.
 
 ---
 
-## Frontend Architecture
+# Prompt 4 – CRUD Operations
 
-```
-Pages
-    ↓
-Components
-    ↓
-Reusable UI Components
-    ↓
-Axios API Layer
-```
+**Prompt**
+
+> Generate CRUD APIs for vehicle inventory using FastAPI and SQLAlchemy with proper error handling and validation.
+
+**Purpose**
+
+Used to implement inventory management endpoints.
 
 ---
 
-## Security
+# Prompt 5 – Search Functionality
 
-- JWT Authentication
-- Password Hashing using bcrypt
-- OAuth2 Authentication Flow
-- Protected API Endpoints
-- Authorization Middleware
+**Prompt**
 
----
+> Create a vehicle search endpoint supporting filtering by make, model, category, minimum price, and maximum price.
 
-## API Endpoints
+**Purpose**
 
-Authentication
-
-- POST /auth/register
-- POST /auth/login
-
-Users
-
-- GET /users/me
-
-Vehicles
-
-- GET /vehicles
-- GET /vehicles/{id}
-- POST /vehicles
-- PUT /vehicles/{id}
-- DELETE /vehicles/{id}
-- POST /vehicles/{id}/purchase
-- POST /vehicles/{id}/restock
+Used to implement search functionality.
 
 ---
 
-## Frontend Pages
+# Prompt 6 – React Frontend
 
-- Dashboard
-- Login
-- Register
-- Vehicle Inventory
-- Profile
+**Prompt**
 
----
+> Create a React dashboard using Vite, React Router, Axios, and Tailwind CSS for managing vehicle inventory.
 
-## Design Principles
+**Purpose**
 
-- Separation of Concerns
-- Repository Pattern
-- Service Layer
-- Reusable Components
-- Responsive UI
-- Clean Architecture
-- RESTful API Design
+Used to scaffold the frontend interface.
 
 ---
 
-## Future Improvements
+# Prompt 7 – API Integration
 
-- Pagination
-- Search
-- Filtering
-- Sorting
-- Sales Reports
-- Order History
-- Docker Deployment
-- CI/CD Pipeline
-- Unit Testing
-- Integration Testing
+**Prompt**
+
+> Connect React frontend forms to FastAPI REST APIs using Axios with JWT authentication.
+
+**Purpose**
+
+Used for frontend-backend integration.
+
+---
+
+# Prompt 8 – Form Validation
+
+**Prompt**
+
+> Create React Hook Form validation for vehicle creation and update forms.
+
+**Purpose**
+
+Used to improve user input validation.
+
+---
+
+# Prompt 9 – Debugging
+
+**Prompt**
+
+> Help debug FastAPI dependency injection, SQLAlchemy session management, CORS configuration, and JWT authentication issues.
+
+**Purpose**
+
+Used to resolve development errors.
+
+---
+
+# Prompt 10 – Unit Testing
+
+**Prompt**
+
+> Generate pytest test cases for authentication, vehicle CRUD operations, inventory purchase, and restock functionality.
+
+**Purpose**
+
+Used to create backend unit tests.
+
+---
+
+# Prompt 11 – Documentation
+
+**Prompt**
+
+> Write a professional README.md for a full-stack FastAPI and React project including installation, API endpoints, testing, deployment instructions, and AI usage documentation.
+
+**Purpose**
+
+Used to prepare project documentation.
+
+---
+
+# Prompt 12 – Code Review
+
+**Prompt**
+
+> Review my project for code quality, project structure, security practices, validation, and possible improvements before submission.
+
+**Purpose**
+
+Used as a final review before project submission.
+
+---
+
+# Reflection
+
+AI tools were used primarily as development assistants for brainstorming, learning framework features, generating boilerplate code, debugging issues, improving documentation, and creating unit tests. All AI-generated suggestions were reviewed, modified, tested, and integrated manually. Final design decisions, implementation, debugging, and validation were performed by the developer.
