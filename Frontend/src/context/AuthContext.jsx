@@ -1,59 +1,72 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import api from "../api/api";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const [token, setToken] = useState(localStorage.getItem("token"));
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        loadUser();
+    }, []);
+
+    const loadUser = async () => {
+        const token = localStorage.getItem("token");
+
         if (!token) {
-            setUser(null);
+            setLoading(false);
             return;
         }
 
+        api.defaults.headers.common[
+            "Authorization"
+        ] = `Bearer ${token}`;
+
         try {
-            const decoded = jwtDecode(token);
+            const response = await api.get("/users/me");
+            setUser(response.data);
+        } catch (error) {
+            console.error(error);
 
-            // Check if token has expired
-            if (decoded.exp && decoded.exp * 1000 < Date.now()) {
-                logout();
-                return;
-            }
+            localStorage.removeItem("token");
 
-            setUser({
-                email: decoded.sub,
-                role: decoded.role,
-            });
+            delete api.defaults.headers.common["Authorization"];
 
-        } catch (err) {
-            console.error("Invalid token:", err);
-            logout();
+            setUser(null);
+        } finally {
+            setLoading(false);
         }
-    }, [token]);
+    };
 
-    const login = (jwt) => {
-        localStorage.setItem("token", jwt);
-        setToken(jwt);
+    const login = async (token) => {
+        localStorage.setItem("token", token);
+
+        api.defaults.headers.common[
+            "Authorization"
+        ] = `Bearer ${token}`;
+
+        await loadUser();
     };
 
     const logout = () => {
         localStorage.removeItem("token");
-        setToken(null);
+
+        delete api.defaults.headers.common["Authorization"];
+
         setUser(null);
     };
 
     return (
         <AuthContext.Provider
             value={{
-                token,
                 user,
+                loading,
+                isAuthenticated: !!user,
+                isAdmin: user?.role === "admin",
                 login,
                 logout,
-                isAuthenticated: !!token,
-                // You MUST include this, or your ActionButtons will break
-                isAdmin: user?.role === "admin",
+                refreshUser: loadUser,
             }}
         >
             {children}

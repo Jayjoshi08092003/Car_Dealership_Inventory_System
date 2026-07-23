@@ -1,67 +1,115 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+
+import {
+    createVehicle,
+    updateVehicle,
+} from "../../services/vehicleService";
 
 import FormInput from "./FormInput";
 import FormSelect from "./FormSelect";
 import FormActions from "./FormActions";
 
-import { createVehicle } from "../../services/vehicleService";
-
-function VehicleForm({ defaultValues = {} }) {
-    const navigate = useNavigate();
-
-    const [loading, setLoading] = useState(false);
+function VehicleForm({
+    defaultValues,
+    onSuccess,
+}) {
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        reset,
+        formState: {
+            errors,
+            isSubmitting,
+        },
     } = useForm({
         defaultValues: {
-            make: defaultValues.make || "",
-            model: defaultValues.model || "",
-            category: defaultValues.category || "SUV",
-            price: defaultValues.price || "",
-            quantity: defaultValues.quantity || "",
+            make: "",
+            model: "",
+            category: "SUV",
+            price: "",
+            quantity: "",
         },
     });
 
-    const onSubmit = async (data) => {
-        try {
-            setLoading(true);
+    useEffect(() => {
 
-            await createVehicle({
+        reset({
+            make: defaultValues?.make ?? "",
+            model: defaultValues?.model ?? "",
+            category: defaultValues?.category ?? "SUV",
+            price: defaultValues?.price ?? "",
+            quantity: defaultValues?.quantity ?? "",
+        });
+
+    }, [defaultValues?.id, reset]);
+
+    const submit = async (data) => {
+
+        try {
+
+            const payload = {
                 ...data,
                 price: Number(data.price),
                 quantity: Number(data.quantity),
+            };
+
+            if (defaultValues?.id) {
+
+                await updateVehicle(
+                    defaultValues.id,
+                    payload
+                );
+
+                toast.success("Vehicle updated successfully");
+
+            } else {
+
+                await createVehicle(payload);
+
+                toast.success("Vehicle added successfully");
+
+            }
+
+            reset({
+                make: "",
+                model: "",
+                category: "SUV",
+                price: "",
+                quantity: "",
             });
 
-            toast.success("Vehicle added successfully!");
+            await onSuccess();
 
-            navigate("/vehicles");
         } catch (error) {
-            console.error(error);
-            toast.error("Failed to add vehicle.");
-        } finally {
-            setLoading(false);
+
+            toast.error(
+                error.response?.data?.detail ??
+                "Operation failed"
+            );
+
         }
+
     };
 
     return (
         <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(submit)}
             className="space-y-6"
         >
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+            <div className="grid grid-cols-2 gap-6">
 
                 <FormInput
                     label="Make"
                     name="make"
                     register={register}
                     errors={errors}
-                    placeholder="Toyota"
+                    rules={{
+                        required: "Required",
+                    }}
                 />
 
                 <FormInput
@@ -69,7 +117,9 @@ function VehicleForm({ defaultValues = {} }) {
                     name="model"
                     register={register}
                     errors={errors}
-                    placeholder="Camry"
+                    rules={{
+                        required: "Required",
+                    }}
                 />
 
                 <FormSelect
@@ -80,8 +130,8 @@ function VehicleForm({ defaultValues = {} }) {
                     options={[
                         "SUV",
                         "Sedan",
-                        "Luxury",
                         "Truck",
+                        "Luxury",
                         "Sports",
                     ]}
                 />
@@ -92,7 +142,9 @@ function VehicleForm({ defaultValues = {} }) {
                     type="number"
                     register={register}
                     errors={errors}
-                    placeholder="2400000"
+                    rules={{
+                        required: "Required",
+                    }}
                 />
 
                 <FormInput
@@ -101,12 +153,22 @@ function VehicleForm({ defaultValues = {} }) {
                     type="number"
                     register={register}
                     errors={errors}
-                    placeholder="5"
+                    rules={{
+                        required: "Required",
+                    }}
                 />
 
             </div>
 
-            <FormActions loading={loading} />
+            <FormActions
+                loading={isSubmitting}
+                submitLabel={
+                    defaultValues?.id
+                        ? "Update Vehicle"
+                        : "Add Vehicle"
+                }
+            />
+
         </form>
     );
 }

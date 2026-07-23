@@ -1,7 +1,13 @@
 import StockBadge from "./StockBadge";
 import ActionButtons from "./ActionButtons";
 
-function VehicleTable({ vehicles, onEdit, onDelete, onPurchase, onRestock }) {
+function VehicleTable({
+    vehicles,
+    onEdit,
+    onDelete,
+    onPurchase,
+    onRestock,
+}) {
     return (
         <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900">
             <table className="min-w-full text-white">
@@ -26,22 +32,26 @@ function VehicleTable({ vehicles, onEdit, onDelete, onPurchase, onRestock }) {
                             <td className="px-6 py-4">{vehicle.make}</td>
                             <td className="px-6 py-4">{vehicle.model}</td>
                             <td className="px-6 py-4">{vehicle.category}</td>
+
                             <td className="px-6 py-4">
-                                ₹{vehicle.price.toLocaleString()}
+                                ₹{Number(vehicle.price).toLocaleString()}
                             </td>
+
                             <td className="px-6 py-4">
                                 {vehicle.quantity}
                             </td>
+
                             <td className="px-6 py-4">
                                 <StockBadge quantity={vehicle.quantity} />
                             </td>
+
                             <td className="px-6 py-4">
-                                <ActionButtons 
-                                    vehicle={vehicle} 
-                                    onEdit={() => onEdit(vehicle)}
-                                    onDelete={() => onDelete(vehicle.id)}
-                                    onPurchase={() => onPurchase(vehicle.id)}
-                                    onRestock={() => onRestock(vehicle.id)}
+                                <ActionButtons
+                                    vehicle={vehicle}
+                                    onEdit={onEdit}
+                                    onDelete={onDelete}
+                                    onPurchase={onPurchase}
+                                    onRestock={onRestock}
                                 />
                             </td>
                         </tr>

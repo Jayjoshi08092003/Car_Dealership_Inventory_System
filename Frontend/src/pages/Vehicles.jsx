@@ -5,37 +5,55 @@ import DashboardLayout from "../components/layout/DashboardLayout";
 import VehicleToolbar from "../components/vehicle/VehicleToolbar";
 import VehicleTable from "../components/vehicle/VehicleTable";
 import DeleteModal from "../components/vehicle/DeleteModal";
+import VehicleModal from "../components/vehicle/VehicleModal";
+import VehicleForm from "../components/vehicle/VehicleForm";
+import PurchaseModal from "../components/vehicle/PurchaseModal";
+import RestockModal from "../components/vehicle/RestockModal";
 
-// Combine your imports into a single line
-import { getVehicles, deleteVehicle } from "../services/vehicleService";
+import {
+    getVehicles,
+    deleteVehicle,
+} from "../services/vehicleService";
 
 function Vehicles() {
     const [vehicles, setVehicles] = useState([]);
+
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("");
-    
-    // Modal state
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingVehicle, setEditingVehicle] = useState(null);
+
     const [deleteOpen, setDeleteOpen] = useState(false);
+    const [purchaseOpen, setPurchaseOpen] = useState(false);
+    const [restockOpen, setRestockOpen] = useState(false);
+
     const [selectedVehicle, setSelectedVehicle] = useState(null);
 
-    useEffect(() => {
-        async function loadVehicles() {
-            try {
-                const data = await getVehicles();
-                setVehicles(data);
-            } catch (error) {
-                console.error(error);
-            }
-        }
+   const loadVehicles = async () => {
+    try {
+        const data = await getVehicles();
 
+        console.log("API DATA");
+        console.table(data);
+        console.log("IDs:", data.map(v => v.id));
+
+        setVehicles(data);
+
+    } catch (error) {
+        console.error(error);
+        toast.error("Failed to load vehicles");
+    }
+};
+
+    useEffect(() => {
         loadVehicles();
     }, []);
 
     const filteredVehicles = vehicles.filter((vehicle) => {
-        const matchesSearch =
-            `${vehicle.make} ${vehicle.model}`
-                .toLowerCase()
-                .includes(search.toLowerCase());
+        const matchesSearch = `${vehicle.make} ${vehicle.model}`
+            .toLowerCase()
+            .includes(search.toLowerCase());
 
         const matchesCategory =
             category === "" || vehicle.category === category;
@@ -44,39 +62,39 @@ function Vehicles() {
     });
 
     const handleEdit = (vehicle) => {
-        console.log("Edit", vehicle);
+        setEditingVehicle(vehicle);
+        setModalOpen(true);
     };
 
-    // This now actually triggers the modal instead of just logging to the console
     const handleDelete = (vehicle) => {
         setSelectedVehicle(vehicle);
         setDeleteOpen(true);
     };
 
     const handlePurchase = (vehicle) => {
-        console.log("Purchase", vehicle);
+        console.log("Purchase:", vehicle);
+        setSelectedVehicle(vehicle);
+        setPurchaseOpen(true);
     };
 
     const handleRestock = (vehicle) => {
-        console.log("Restock", vehicle);
+        console.log("Restock:", vehicle);
+        setSelectedVehicle(vehicle);
+        setRestockOpen(true);
     };
 
-    // This MUST be inside the component so it has access to setVehicles and setDeleteOpen
-    const confirmDelete = async (vehicle) => {
+    const confirmDelete = async () => {
         try {
-            // Assuming your modal passes back the vehicle object or ID
-            const idToDelete = vehicle?.id || vehicle;
-            await deleteVehicle(idToDelete);
+            await deleteVehicle(selectedVehicle.id);
 
-            toast.success("Vehicle deleted successfully");
-
-            setVehicles((prev) =>
-                prev.filter((v) => v.id !== idToDelete)
-            );
+            toast.success("Vehicle deleted");
 
             setDeleteOpen(false);
+            setSelectedVehicle(null);
+
+            await loadVehicles();
         } catch (error) {
-            toast.error("Failed to delete vehicle");
+            toast.error("Delete failed");
         }
     };
 
@@ -91,6 +109,10 @@ function Vehicles() {
                 setSearch={setSearch}
                 category={category}
                 setCategory={setCategory}
+                onAddVehicle={() => {
+                    setEditingVehicle(null);
+                    setModalOpen(true);
+                }}
             />
 
             <VehicleTable
@@ -101,12 +123,62 @@ function Vehicles() {
                 onRestock={handleRestock}
             />
 
-            {/* Modals MUST go inside the return block */}
             <DeleteModal
                 open={deleteOpen}
                 vehicle={selectedVehicle}
-                onCancel={() => setDeleteOpen(false)}
+                onCancel={() => {
+                    setDeleteOpen(false);
+                    setSelectedVehicle(null);
+                }}
                 onConfirm={confirmDelete}
+            />
+
+            <VehicleModal
+                open={modalOpen}
+                title={editingVehicle ? "Edit Vehicle" : "Add Vehicle"}
+                onClose={() => {
+                    setEditingVehicle(null);
+                    setModalOpen(false);
+                }}
+            >
+            <VehicleForm
+    defaultValues={editingVehicle}
+    onSuccess={async () => {
+        await loadVehicles();
+        setEditingVehicle(null);
+        setModalOpen(false);
+    }}
+/>
+            </VehicleModal>
+
+            <PurchaseModal
+                key={selectedVehicle?.id}
+                open={purchaseOpen}
+                vehicle={selectedVehicle}
+                onClose={() => {
+                    setPurchaseOpen(false);
+                    setSelectedVehicle(null);
+                }}
+                onSuccess={async () => {
+                    await loadVehicles();
+                    setPurchaseOpen(false);
+                    setSelectedVehicle(null);
+                }}
+            />
+
+            <RestockModal
+                key={selectedVehicle?.id}
+                open={restockOpen}
+                vehicle={selectedVehicle}
+                onClose={() => {
+                    setRestockOpen(false);
+                    setSelectedVehicle(null);
+                }}
+                onSuccess={async () => {
+                    await loadVehicles();
+                    setRestockOpen(false);
+                    setSelectedVehicle(null);
+                }}
             />
         </DashboardLayout>
     );

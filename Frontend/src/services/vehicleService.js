@@ -1,39 +1,54 @@
 import api from "../api/api";
 
+// Get all vehicles
 export const getVehicles = async () => {
-    const res = await api.get("/vehicles");
-    return res.data;
+    const response = await api.get("/vehicles");
+    return response.data;
 };
 
+// Search vehicles
 export const searchVehicles = async (query) => {
-    const res = await api.get(`/vehicles/search?q=${query}`);
-    return res.data;
+    const response = await api.get("/vehicles/search", {
+        params: { query },
+    });
+
+    return response.data;
 };
 
+// Create vehicle
 export const createVehicle = async (vehicle) => {
-    const res = await api.post("/vehicles", vehicle);
-    return res.data;
+    const response = await api.post("/vehicles", vehicle);
+    return response.data;
 };
 
-export const updateVehicle = async (id, data) => {
-    const res = await api.put(`/vehicles/${id}`, data);
-    return res.data;
+// Update vehicle
+export const updateVehicle = async (id, vehicle) => {
+    const response = await api.put(`/vehicles/${id}`, vehicle);
+    return response.data;
 };
 
+// Delete vehicle
 export const deleteVehicle = async (id) => {
-    await api.delete(`/vehicles/${id}`);
+    const response = await api.delete(`/vehicles/${id}`);
+    return response.data;
 };
 
+// Purchase vehicle
 export const purchaseVehicle = async (id, quantity = 1) => {
-    const res = await api.post(`/vehicles/${id}/purchase`, {
-        quantity,
-    });
-    return res.data;
+    const response = await api.post(
+        `/vehicles/${id}/purchase`,
+        { quantity }
+    );
+
+    return response.data;
 };
 
+// Restock vehicle
 export const restockVehicle = async (id, quantity) => {
-    const res = await api.post(`/vehicles/${id}/restock`, {
-        quantity,
-    });
-    return res.data;
+    const response = await api.post(
+        `/vehicles/${id}/restock`,
+        { quantity }
+    );
+
+    return response.data;
 };
